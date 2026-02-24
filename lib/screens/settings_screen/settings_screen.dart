@@ -1,17 +1,39 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:master_html/screens/settings_screen/widgets/change_theme_button_widget.dart';
 import 'package:master_html/screens/settings_screen/widgets/font_family_dropdown_button.dart';
 import 'package:master_html/screens/settings_screen/widgets/font_size_dropdown_button.dart';
 import 'package:master_html/screens/settings_screen/widgets/header_container.dart';
 import 'package:master_html/screens/settings_screen/widgets/my_list_tile.dart';
+import 'package:master_html/services/reminder_service.dart';
 
 import '../../constants/consts.dart';
 import '../../cubits/theme_cubit/theme_cubit.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends StatefulWidget {
   static const routeName = "/setting-screen";
 
   const SettingScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
+  bool _reminderEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReminderSetting();
+  }
+
+  Future<void> _loadReminderSetting() async {
+    final enabled = await ReminderService.isReminderEnabled();
+    setState(() {
+      _reminderEnabled = enabled;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +73,25 @@ class SettingScreen extends StatelessWidget {
                     context: context,
                     title: "Font family",
                     trailing: const FontFamilyDropDownButton()),
+                headerContainer(context: context, text: "Notifications"),
+                myListTile(
+                    onTap: () async {
+                      setState(() {
+                        _reminderEnabled = !_reminderEnabled;
+                      });
+                      await ReminderService.setReminderEnabled(_reminderEnabled);
+                    },
+                    context: context,
+                    title: "Study Reminders",
+                    trailing: Switch(
+                      value: _reminderEnabled,
+                      onChanged: (value) async {
+                        setState(() {
+                          _reminderEnabled = value;
+                        });
+                        await ReminderService.setReminderEnabled(value);
+                      },
+                    )),
                 headerContainer(context: context, text: "About us"),
                 myListTile(
                     onTap: () {

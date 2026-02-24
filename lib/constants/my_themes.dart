@@ -25,14 +25,14 @@ class MyThemes {
       iconTheme: IconThemeData(color: orangeColor, size: 30),
       titleTextStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: darkCardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
     ),
     scrollbarTheme: ScrollbarThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) {
+      thumbColor: WidgetStateProperty.resolveWith((states) {
         return Colors.grey;
       }),
       radius: const Radius.circular(4),
@@ -69,13 +69,13 @@ class MyThemes {
       bodySmall: TextStyle(
           fontSize: 16, color: Colors.black, fontWeight: FontWeight.w400),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
         color: lightCardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         )),
     scrollbarTheme: ScrollbarThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) {
+      thumbColor: WidgetStateProperty.resolveWith((states) {
         return Colors.grey;
       }),
         radius: const Radius.circular(4),

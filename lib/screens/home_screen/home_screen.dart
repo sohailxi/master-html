@@ -1,10 +1,14 @@
+import 'package:master_html/screens/achievements_screen.dart';
 import 'package:master_html/screens/home_screen/widgets/facebook_community_widget.dart';
 import 'package:master_html/screens/home_screen/widgets/faq_card.dart';
 import 'package:master_html/screens/home_screen/widgets/item_cards.dart';
 import 'package:master_html/screens/home_screen/widgets/progress_widget_row.dart';
+import 'package:master_html/screens/home_screen/widgets/study_stats_widget.dart';
+import 'package:master_html/screens/home_screen/widgets/quick_review_widget.dart';
 import 'package:master_html/screens/learning_screen/learning_screen.dart';
 import 'package:master_html/screens/profile_screen/profile_screen.dart';
 import 'package:master_html/screens/settings_screen/settings_screen.dart';
+import 'package:master_html/services/reminder_service.dart';
 
 import '../../common_widgets/side_drawer/side_drawer.dart';
 import '../../constants/consts.dart';
@@ -13,9 +17,38 @@ import '../code_screen/codes_main_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key , required this.isGetStarted}) : super(key: key);
   final bool isGetStarted ;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkReminders();
+  }
+
+  Future<void> _checkReminders() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) {
+      final shouldShowReminder = await ReminderService.shouldShowReminder();
+      if (shouldShowReminder) {
+        final lastStudyDate = await ReminderService.getLastStudyDate();
+        if (lastStudyDate != null) {
+          final daysMissed = DateTime.now().difference(lastStudyDate).inDays;
+          if (daysMissed > 0 && mounted) {
+            ReminderService.showWelcomeBackDialog(context, daysMissed);
+          }
+        } else if (mounted) {
+          ReminderService.showStudyReminder(context);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +90,8 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const ProgressWidgetRow(),
+                    const StudyStatsWidget(),
+                    const QuickReviewWidget(),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: GridView(
@@ -70,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           itemCard(
                               context: context,
-                              text: isGetStarted ? 'Get Stated' : 'Continue Learning',
+                              text: widget.isGetStarted ? 'Get Started' : 'Continue Learning',
                               iconWidget: const Icon(Icons.arrow_forward),
                               onTap: () {
                                 Navigator.of(context)
@@ -89,6 +124,14 @@ class HomeScreen extends StatelessWidget {
                               text: 'Report a bug or issue',
                               iconWidget: const Icon(Icons.bug_report_sharp),
                               onTap: _reportViaEmail),
+                          itemCard(
+                              context: context,
+                              text: 'Achievements',
+                              iconWidget: const Icon(Icons.emoji_events),
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed(AchievementsScreen.routeName);
+                              }),
                           //Settings card
                           GestureDetector(
                             onTap: () {

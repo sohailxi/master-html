@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:master_html/cubits/codes_cubit/code_cubit.dart';
+import 'package:master_html/screens/achievements_screen.dart';
 import 'package:master_html/screens/code_screen/codes_main_screen.dart';
 import 'package:master_html/screens/profile_screen/profile_screen.dart';
 import 'package:master_html/screens/quiz_screen/quiz_screen.dart';
@@ -48,6 +49,9 @@ class Routes {
                     create: (context) => UserNameCubit(),
                   ),
                 ], child: const ProfileScreen()));
+//Achievements screen
+      case AchievementsScreen.routeName:
+        return MaterialPageRoute(builder: (context) => const AchievementsScreen());
 
       default:
         return null;

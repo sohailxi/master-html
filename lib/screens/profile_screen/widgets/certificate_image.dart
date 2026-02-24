@@ -25,7 +25,7 @@ class CertificateImage extends StatelessWidget {
         .getListOfCompletedLessons()
         .length;
     final double percentage = completedLessonsCount / allLessonsCount * 100;
-    final bool showCertificate = percentage >= 2 &&
+    final bool showCertificate = percentage >= 100 &&
         (profileImageCubit.profileImage != null &&
             userNameCubit.userName != null);
 

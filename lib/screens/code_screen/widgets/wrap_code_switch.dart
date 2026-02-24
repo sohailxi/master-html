@@ -16,7 +16,7 @@ class WrapCodeSwitch extends StatelessWidget {
           final bool isOn = codeCubit.getWrapCodeCurrentSetting();
           if (isOn) {
             return CupertinoSwitch(
-                activeColor: CupertinoColors.activeOrange,
+                activeTrackColor: CupertinoColors.activeOrange,
                 value: true,
                 onChanged: (value) {
                   codeCubit.changeWrapCodeSetting(value);

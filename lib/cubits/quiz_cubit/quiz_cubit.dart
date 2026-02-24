@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../resources/models/quiz_model.dart';
 import '../../screens/result_screen/result_screen.dart';
+import '../../services/notification_service.dart';
 
 //These are the frequently used strings
 const String selectedAnswerConstString = "selectedAnswer";
@@ -91,6 +92,7 @@ class QuizCubit extends Cubit<QuizState> {
     }
     if (correctAnswersCount == playedQuiz.length) {
       resultText = perfectConstString;
+      NotificationService.showPerfectScoreNotification(context);
     } else if (correctAnswersCount < playedQuiz.length &&
         correctAnswersCount > playedQuiz.length - 2) {
       resultText = almostThereConstString;

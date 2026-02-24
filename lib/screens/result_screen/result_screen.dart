@@ -20,7 +20,7 @@ class ResultScreen extends StatelessWidget {
     final String resultText = argsData['resultText'];
     final resultCubit = BlocProvider.of<LessonCubit>(context);
     final bool didPassQuiz = resultCubit.didPassQuiz(
-        resultText: resultText, lessonName: argsData['lessonName']);
+        resultText: resultText, lessonName: argsData['lessonName'], context: context);
     final AdCubit adCubit = BlocProvider.of<AdCubit>(context);
 
     return Scaffold(

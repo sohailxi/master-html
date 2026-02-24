@@ -10,7 +10,6 @@ class ProgressWidgetRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final smallTextTheme = Theme.of(context).textTheme.bodySmall;
-    final int allLessonsCount = AllLessonsList.length;
     return Padding(
       padding: const EdgeInsets.only(left: 24.0, right: 24, top: 20),
       child: Column(
@@ -36,7 +35,7 @@ class ProgressWidgetRow extends StatelessWidget {
                                   },
                                   style: ButtonStyle(
                                     overlayColor:
-                                        MaterialStateColor.resolveWith(
+                                        WidgetStateColor.resolveWith(
                                             (states) => Theme.of(context)
                                                 .cardTheme
                                                 .color!),
@@ -104,12 +103,9 @@ class ProgressWidgetRow extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           BlocBuilder<LessonCubit, LessonState>(builder: (context, state) {
-            final int completedLessonsCount =
-                BlocProvider.of<LessonCubit>(context)
-                    .getListOfCompletedLessons()
-                    .length;
-            final double percentage =
-                completedLessonsCount / allLessonsCount * 100;
+            final lessonCubit = BlocProvider.of<LessonCubit>(context);
+            final double percentage = lessonCubit.getProgressPercentage();
+            final int learningStreak = lessonCubit.getLearningStreak();
             return Stack(children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
@@ -123,18 +119,41 @@ class ProgressWidgetRow extends StatelessWidget {
               Center(
                   child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "${percentage.toStringAsFixed(2)}%",
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    color: const Color(0xffe6e6e6) ,
-                    shadows: <Shadow>[
-                      const Shadow(
-                        offset: Offset(0.7, 0.95),
-                        blurRadius: 3.0,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                child: Column(
+                  children: [
+                    Text(
+                      "${percentage.toStringAsFixed(1)}%",
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        color: const Color(0xffe6e6e6),
+                        shadows: <Shadow>[
+                          const Shadow(
+                            offset: Offset(0.7, 0.95),
+                            blurRadius: 3.0,
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    if (learningStreak > 0)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.local_fire_department,
+                            color: Color(0xffFEA000),
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "$learningStreak day streak",
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: const Color(0xffe6e6e6),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ))
             ]);
